@@ -1,33 +1,59 @@
-import { BaseEntity, BaseEntityProps } from './base.entity';
-
-// Define PostProps
-export interface PostProps extends BaseEntityProps {
-  title: string | null;
-  content: string | null;
-}
+import {
+  IsDate,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  IsUUID,
+  MinLength,
+} from 'class-validator';
+import { BaseEntity } from './base.entity';
 
 // Define CreatePostDto
-export interface CreatePostDto {
+export class CreatePostDto {
+  @IsString()
+  @IsNotEmpty()
+  @MinLength(3)
   title: string;
+
+  @IsString()
+  @IsNotEmpty()
   content: string;
 }
 
 // Define HydratePostDto
-export interface HydratePostDto {
+export class HydratePostDto {
+  @IsUUID()
   id: string;
+
+  @IsOptional()
+  @IsString()
   title?: string;
+
+  @IsOptional()
+  @IsString()
   content?: string;
+
+  @IsDate()
   createdAt: Date;
+
+  @IsDate()
   updatedAt: Date;
 }
 
-export class Post extends BaseEntity implements PostProps {
+// Define Post
+export class Post extends BaseEntity {
   // Properties that are specific to Post entity
+  @IsOptional()
+  @MinLength(3)
+  @IsString()
   public title: string | null;
+
+  @IsOptional()
+  @IsString()
   public content: string | null;
 
   // Constructor that initializes specific properties
-  private constructor(props: Partial<PostProps>) {
+  private constructor(props: Partial<Post>) {
     super(props);
     this.title = props.title ?? null;
     this.content = props.content ?? null;

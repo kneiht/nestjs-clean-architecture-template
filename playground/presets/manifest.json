@@ -1,1 +1,4 @@
-[{ "name": "Default", "file": "default.json" }]
+[
+  { "name": "Post Success", "file": "posts-success.json" },
+  { "name": "Post Error", "file": "posts-error.json" }
+]

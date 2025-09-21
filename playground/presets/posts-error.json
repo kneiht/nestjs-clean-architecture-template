@@ -1,0 +1,11 @@
+[
+  {
+    "label": "POST /posts",
+    "method": "POST",
+    "path": "/posts",
+    "body": {
+      "title": "12",
+      "content": "new content"
+    }
+  }
+]

@@ -1,23 +1,20 @@
 import { uuidv7 } from 'uuidv7';
-
-// Define BaseEntityProps
-export interface BaseEntityProps {
-  id: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
+import { IsDate, IsUUID } from 'class-validator';
 
 // Define BaseEntity
-export abstract class BaseEntity implements BaseEntityProps {
+export abstract class BaseEntity {
   // Properties that are common to all entities
+  @IsUUID()
   public readonly id: string;
+  @IsDate()
   public readonly createdAt: Date;
+  @IsDate()
   public updatedAt: Date;
 
   // Constructor that initializes common properties
   // It is protected to prevent direct instantiation
   // Add static methods create and from to create entities
-  protected constructor(props: Partial<BaseEntityProps>) {
+  protected constructor(props: Partial<BaseEntity>) {
     this.id = props.id ?? BaseEntity.idGenerator();
     this.createdAt = props.createdAt ?? new Date();
     this.updatedAt = props.updatedAt ?? new Date();
