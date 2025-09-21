@@ -1,0 +1,35 @@
+[
+  {
+    "label": "GET /posts",
+    "method": "GET",
+    "path": "/posts"
+  },
+  {
+    "label": "GET /posts/:id",
+    "method": "GET",
+    "path": "/posts/01996059-21ac-727a-938a-9b5a1d230b2f"
+  },
+  {
+    "label": "POST /posts",
+    "method": "POST",
+    "path": "/posts",
+    "body": {
+      "title": "new post",
+      "content": "new content"
+    }
+  },
+  {
+    "label": "PUT /posts/:id",
+    "method": "PUT",
+    "path": "/posts/01996059-21ac-727a-938a-9b5a1d230b2f",
+    "body": {
+      "title": "updated post",
+      "content": "updated content"
+    }
+  },
+  {
+    "label": "DELETE /posts/:id",
+    "method": "DELETE",
+    "path": "/posts/01996059-21ac-727a-938a-9b5a1d230b2f"
+  }
+]

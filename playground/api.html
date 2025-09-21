@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>API Tester</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        --scroll-track: #0f172a; /* slate-900 */
+        --scroll-thumb: #334155; /* slate-700 */
+        --scroll-thumb-hover: #475569; /* slate-600 */
+        --scroll-corner: #0b1228; /* near code bg */
+      }
+      /* Firefox */
+      * {
+        scrollbar-width: thin;
+        scrollbar-color: var(--scroll-thumb) var(--scroll-track);
+      }
+      /* WebKit */
+      *::-webkit-scrollbar {
+        width: 12px;
+        height: 12px;
+      }
+      *::-webkit-scrollbar-track {
+        background: var(--scroll-track);
+        border-radius: 9999px;
+      }
+      *::-webkit-scrollbar-thumb {
+        background: linear-gradient(
+          180deg,
+          rgba(51, 65, 85, 0.95),
+          rgba(30, 41, 59, 0.95)
+        );
+        border: 2px solid var(--scroll-track);
+        border-radius: 9999px;
+      }
+      *::-webkit-scrollbar-thumb:hover {
+        background: var(--scroll-thumb-hover);
+      }
+      *::-webkit-scrollbar-corner {
+        background: var(--scroll-corner);
+      }
+    </style>
+  </head>
+  <body class="min-h-screen bg-slate-950 text-slate-100">
+    <div class="max-w-6xl mx-auto p-2">
+
+      <style>
+        .quick-test-btn {
+          background-color: #1e293b; /* slate-800 */
+          border: 1px solid #334155; /* slate-700 */
+          padding: 6px 12px;
+          border-radius: 6px;
+          font-size: 12px;
+          transition: all 0.2s;
+        }
+        .quick-test-btn:hover {
+          background-color: #334155; /* slate-700 */
+          border-color: #475569; /* slate-600 */
+        }
+        .test-file-btn {
+          padding: 4px 10px;
+          border-radius: 4px;
+          transition: background-color 0.2s;
+          cursor: pointer;
+        }
+      </style>
+
+      <!-- Quick Tests -->
+      <section id="quick-tests" class="rounded-xl border border-slate-800 bg-slate-900/60 p-2 shadow mb-2">
+        <div class="flex items-center justify-between mb-2">
+          <div
+            id="test-file-selector"
+            class="flex items-center gap-1 rounded-md bg-slate-800 border border-slate-700 p-1 text-xs"
+          ></div>
+        </div>
+        <div id="quick-tests-container" class="flex flex-wrap gap-2"></div>
+      </section>
+
+      <!-- API Tester -->
+      <section id="api-tester" class="grid gap-2 md:grid-cols-2">
+        <div class="grid gap-2">
+          <!-- Request -->
+          <div
+            class="rounded-xl border border-slate-800 bg-slate-900/60 p-2 shadow"
+          >
+            <h3 class="font-medium mb-3">Request</h3>
+            <div class="grid gap-3">
+              <div>
+                <label class="text-xs text-slate-400">
+                  <span class="block mb-1">Base URL</span>
+                  <input
+                    id="api-url"
+                    value="http://localhost:3000"
+                    class="w-full rounded-md bg-slate-900/70 border border-slate-800 px-3 py-2 text-sm outline-none focus:border-indigo-500"
+                  />
+                </label>
+              </div>
+              <div class="grid grid-cols-[auto_1fr] gap-3 items-center">
+                <select id="api-method" class="rounded-md bg-slate-900/70 border border-slate-800 px-3 py-2 text-sm outline-none focus:border-indigo-500">
+                  <option>GET</option>
+                  <option>POST</option>
+                  <option>PUT</option>
+                  <option>PATCH</option>
+                  <option>DELETE</option>
+                </select>
+                <input
+                  id="api-path"
+                  placeholder="/path/to/resource"
+                  class="w-full rounded-md bg-slate-900/70 border border-slate-800 px-3 py-2 text-sm outline-none focus:border-indigo-500"
+                />
+              </div>
+
+              <div class="grid gap-2 mt-2">
+                <h4 class="text-sm font-medium">Body</h4>
+                <textarea
+                  id="api-body"
+                  placeholder="{ "key": "value" }"
+                  spellcheck="false"
+                  class="w-full rounded-md bg-slate-900/70 border border-slate-800 px-3 py-2 text-sm outline-none focus:border-indigo-500 h-32"
+                ></textarea>
+              </div>
+
+              <div class="grid gap-2 mt-2">
+                <h4 class="text-sm font-medium">Authentication</h4>
+                <label class="text-xs text-slate-400">
+                  <span class="block mb-1">Bearer Token</span>
+                  <input
+                    id="api-token"
+                    placeholder="Login to get a token..."
+                    class="w-full rounded-md bg-slate-900/70 border border-slate-800 px-3 py-2 text-sm outline-none focus:border-indigo-500"
+                  />
+                </label>
+              </div>
+
+              <button
+                id="btn-send"
+                class="inline-flex items-center justify-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium hover:bg-indigo-500"
+              >
+                Send
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="flex flex-col gap-2">
+            <!-- Response -->
+            <div
+              class="rounded-xl border border-slate-800 bg-slate-900/60 p-2 shadow flex flex-col flex-grow"
+            >
+              <h3 class="font-medium mb-3">Response</h3>
+              <pre
+                id="api-out"
+                class="bg-slate-950/70 border border-slate-800 rounded-lg p-3 text-[12px] whitespace-pre-wrap overflow-auto flex-grow min-h-[200px] max-h-[calc(100vh-250px)] "
+              ></pre>
+            </div>
+        </div>
+      </section>
+
+      <footer class="mt-8 text-center text-xs text-slate-400">
+        This UI is generated by AI for the purpose of testing the APIs only.
+      </footer>
+    </div>
+
+    <script>
+      const $ = (id) => document.getElementById(id);
+      const qAll = (sel) => Array.from(document.querySelectorAll(sel));
+
+      function getHeaders() {
+        const headers = { 'Content-Type': 'application/json' };
+        const token = $('api-token').value.trim();
+        if (token) {
+          headers['Authorization'] = `Bearer ${token}`;
+        }
+        return headers;
+      }
+
+      async function callApi() {
+        const baseUrl = $('api-url').value.trim().replace(/\/$/, '');
+        const path = $('api-path').value.trim();
+        const method = $('api-method').value;
+        const url = `${baseUrl}${path}`;
+        const outEl = $('api-out');
+        
+        let body = $('api-body').value.trim();
+        try {
+            body = body ? JSON.parse(body) : null;
+        } catch (e) {
+            outEl.textContent = JSON.stringify({ error: "Invalid JSON in request body" }, null, 2);
+            return;
+        }
+
+        try {
+          const res = await fetch(url, {
+            method,
+            headers: getHeaders(),
+            body: (method !== 'GET' && method !== 'DELETE' && body) ? JSON.stringify(body) : undefined,
+          });
+
+          const responseBody = await res.json().catch(() => ({ raw: 'Non-JSON response' }));
+          
+          const responseHeaders = {};
+          res.headers.forEach((value, key) => {
+            responseHeaders[key] = value;
+          });
+
+          outEl.textContent = JSON.stringify(
+            {
+              status: res.status,
+              ok: res.ok,
+              headers: responseHeaders,
+              body: responseBody,
+            },
+            null,
+            2,
+          );
+
+          // If accessToken is in the response body, populate the token input and save to localStorage
+          if (responseBody && responseBody.accessToken) {
+            $('api-token').value = responseBody.accessToken;
+            localStorage.setItem('api-token', responseBody.accessToken);
+          }
+        } catch (e) {
+          outEl.textContent = JSON.stringify({ error: String(e) }, null, 2);
+        }
+      }
+
+      $('btn-send').addEventListener('click', callApi);
+
+      async function loadQuickTests(filename = 'default.json') {
+        try {
+          const res = await fetch(`presets/${filename}`);
+          if (!res.ok) throw new Error(`HTTP error! status: ${res.status}. Failed to load ${filename}`);
+          const tests = await res.json();
+          const container = $('quick-tests-container');
+          container.innerHTML = ''; // Clear existing buttons
+
+          tests.forEach(test => {
+            const btn = document.createElement('button');
+            btn.className = 'quick-test-btn';
+            btn.textContent = test.name || test.label; // Use name, fallback to label
+            btn.addEventListener('click', () => {
+              $('api-method').value = test.method;
+              $('api-path').value = test.path;
+              $('api-body').value = test.body ? JSON.stringify(test.body, null, 2) : '';
+              callApi();
+            });
+            container.appendChild(btn);
+          });
+        } catch (e) {
+          console.error("Could not load quick tests:", e);
+          $('quick-tests-container').textContent = 'Failed to load quick tests.';
+        }
+      }
+
+      async function setupTestSelector() {
+        try {
+          const res = await fetch('presets/manifest.json');
+          if (!res.ok) throw new Error('Could not load test manifest.');
+          const testFiles = await res.json();
+          const container = $('test-file-selector');
+          
+          testFiles.forEach(testFile => {
+            const btn = document.createElement('button');
+            btn.className = 'test-file-btn';
+            btn.dataset.file = testFile.file;
+            btn.textContent = testFile.name;
+            
+            btn.addEventListener('click', () => {
+              // Remove active class from all buttons
+              qAll('#test-file-selector button').forEach(b => b.style.backgroundColor = 'transparent');
+              // Add active class to clicked button
+              btn.style.backgroundColor = '#334155'; // slate-700
+              loadQuickTests(testFile.file);
+            });
+
+            container.appendChild(btn);
+          });
+
+          // Activate and load the first test file by default
+          const firstButton = container.querySelector('button');
+          if (firstButton) {
+            firstButton.style.backgroundColor = '#334155'; // slate-700
+            loadQuickTests(firstButton.dataset.file);
+          }
+        } catch (e) {
+          $('test-file-selector').textContent = 'Failed to load test manifest.';
+          console.error(e);
+        }
+      }
+
+      function loadTokenFromStorage() {
+        const savedToken = localStorage.getItem('api-token');
+        if (savedToken) {
+          $('api-token').value = savedToken;
+        }
+      }
+
+      document.addEventListener('DOMContentLoaded', () => {
+        setupTestSelector();
+        loadTokenFromStorage();
+      });
+    </script>
+  </body>
+</html>
