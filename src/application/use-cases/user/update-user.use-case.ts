@@ -8,7 +8,7 @@ import {
   failureValidation,
   successOk,
   UseCaseReponse,
-} from '@/application/use-cases/response.js';
+} from '@/application/use-cases/response';
 import { EntityValidationError } from '@/entities';
 
 // Define the use case

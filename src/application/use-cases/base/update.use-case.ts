@@ -6,8 +6,8 @@ import {
   failureValidation,
   successOk,
   UseCaseReponse,
-} from '../response.js';
-import { BaseEntity } from '@/entities/base.entity.js';
+} from '../response';
+import { BaseEntity } from '@/entities/base.entity';
 import { EntityValidationError } from '@/entities/entity.errors';
 
 // Define the use case

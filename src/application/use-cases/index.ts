@@ -1,4 +1,4 @@
-import { UseCaseReponse } from './response.js';
+import { UseCaseReponse } from './response';
 
 export interface IUseCase<T> {
   execute(input: T): Promise<UseCaseReponse<unknown>>;

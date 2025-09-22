@@ -7,7 +7,7 @@ import {
   failureValidation,
   successCreated,
   UseCaseReponse,
-} from '../response.js';
+} from '../response';
 import { EntityValidationError } from '@/entities';
 
 // Define the use case for adding a user
