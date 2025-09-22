@@ -1,0 +1,20 @@
+[
+  {
+    "label": "POST /users",
+    "method": "POST",
+    "path": "/users",
+    "body": {
+      "name": "Jane Doe",
+      "email": "jane.doe@example.com",
+      "password": "password123"
+    }
+  },
+  {
+    "label": "PUT /users/:id",
+    "method": "PUT",
+    "path": "/users/01997199-4f31-7718-a766-687e926dd0c7",
+    "body": {
+      "name": "John Doe Updated"
+    }
+  }
+]
