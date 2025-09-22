@@ -7,7 +7,7 @@
   {
     "label": "GET /posts/:id",
     "method": "GET",
-    "path": "/posts/01996059-21ac-727a-938a-9b5a1d230b2f"
+    "path": "/posts/01997199-4f31-7718-a766-687e926dd0b6"
   },
   {
     "label": "POST /posts",
@@ -21,7 +21,7 @@
   {
     "label": "PUT /posts/:id",
     "method": "PUT",
-    "path": "/posts/01996059-21ac-727a-938a-9b5a1d230b2f",
+    "path": "/posts/01997199-4f31-7718-a766-687e926dd0b6",
     "body": {
       "title": "updated post",
       "content": "updated content"
@@ -30,6 +30,6 @@
   {
     "label": "DELETE /posts/:id",
     "method": "DELETE",
-    "path": "/posts/01996059-21ac-727a-938a-9b5a1d230b2f"
+    "path": "/posts/01997199-4f31-7718-a766-687e926dd0b6"
   }
 ]
