@@ -58,5 +58,6 @@ import { AddUserUseCase, UpdateUserUseCase } from '@/application/use-cases';
       useClass: UserInMemoryRepository,
     },
   ],
+  exports: [AddUserUseCase, UserInMemoryRepository],
 })
 export class UsersModule {}
