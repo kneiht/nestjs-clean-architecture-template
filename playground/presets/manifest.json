@@ -1,4 +1,5 @@
 [
+  { "name": "Auth", "file": "auth.json" },
   { "name": "Post Success", "file": "posts-success.json" },
   { "name": "Post Error", "file": "posts-error.json" },
   { "name": "User Success", "file": "users-success.json" },
