@@ -2,6 +2,7 @@ import { validate } from 'class-validator';
 import {
   IsDate,
   IsEmail,
+  IsEnum,
   IsNotEmpty,
   IsOptional,
   IsString,
@@ -11,6 +12,11 @@ import {
 import { BaseEntity } from './base.entity';
 import { EntityValidationError } from './entity.errors';
 import bcrypt from 'node_modules/bcryptjs';
+
+export enum Role {
+  USER = 'USER',
+  ADMIN = 'ADMIN',
+}
 
 // Define CreateUserDto
 export class CreateUserDto {
@@ -27,6 +33,10 @@ export class CreateUserDto {
   @IsNotEmpty()
   @MinLength(6)
   password: string;
+
+  @IsOptional()
+  @IsEnum(Role)
+  role?: Role;
 }
 
 // Define HydrateUserDto
@@ -45,6 +55,9 @@ export class HydrateUserDto {
   @IsNotEmpty()
   hashedPassword: string;
 
+  @IsEnum(Role)
+  role: Role;
+
   @IsDate()
   createdAt: Date;
 
@@ -60,6 +73,10 @@ export class UpdateUserDto {
   @IsString()
   @MinLength(3)
   name?: string;
+
+  @IsOptional()
+  @IsEnum(Role)
+  role?: Role;
 }
 
 // Define User
@@ -74,16 +91,24 @@ export class User extends BaseEntity {
   @IsNotEmpty()
   public email: string;
 
+  @IsEnum(Role)
+  public role: Role;
+
   private readonly hashedPassword: string;
 
   // Constructor that initializes specific properties
   protected constructor(
-    props: Partial<User> & { email: string; hashedPassword: string },
+    props: Partial<User> & {
+      email: string;
+      hashedPassword: string;
+      role: Role;
+    },
   ) {
     super(props);
     this.name = props.name ?? null;
     this.email = props.email;
     this.hashedPassword = props.hashedPassword;
+    this.role = props.role;
   }
 
   // Validate
@@ -100,6 +125,7 @@ export class User extends BaseEntity {
     const userProps = {
       ...props,
       hashedPassword: await bcrypt.hash(props.password, 10),
+      role: props.role ?? Role.USER,
     };
     return new User(userProps);
   }
@@ -110,12 +136,18 @@ export class User extends BaseEntity {
     return new User(props);
   }
 
+  // Verify password
+  public verifyPassword(password: string): boolean {
+    return bcrypt.compareSync(password, this.hashedPassword);
+  }
+
   // toJSON
   public toJSON() {
     return {
       id: this.id,
       name: this.name,
       email: this.email,
+      role: this.role,
       createdAt: this.createdAt,
       updatedAt: this.updatedAt,
     };
