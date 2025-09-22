@@ -1,5 +1,4 @@
 import { validate } from 'class-validator';
-import { plainToInstance } from 'class-transformer';
 import {
   IsDate,
   IsNotEmpty,
@@ -43,6 +42,20 @@ export class HydratePostDto {
   updatedAt: Date;
 }
 
+export class UpdatePostDto {
+  @IsUUID()
+  id: string;
+
+  @IsOptional()
+  @IsString()
+  @MinLength(3)
+  title?: string;
+
+  @IsOptional()
+  @IsString()
+  content?: string;
+}
+
 // Define Post
 export class Post extends BaseEntity {
   // Properties that are specific to Post entity
@@ -56,7 +69,7 @@ export class Post extends BaseEntity {
   public content: string | null;
 
   // Constructor that initializes specific properties
-  private constructor(props: Partial<Post>) {
+  protected constructor(props: Partial<Post>) {
     super(props);
     this.title = props.title ?? null;
     this.content = props.content ?? null;
