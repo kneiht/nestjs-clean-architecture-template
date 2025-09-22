@@ -1,2 +1,3 @@
-export * from './base.repository.js';
-export * from './post.repository.js';
+export * from './base.repository';
+export * from './post.repository';
+export * from './user.repository';
