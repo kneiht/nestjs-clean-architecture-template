@@ -1,0 +1,11 @@
+import { UseCaseReponse } from './response.js';
+
+export interface IUseCase<T> {
+  execute(input: T): Promise<UseCaseReponse<unknown>>;
+}
+
+export * from './base/add.use-case.js';
+export * from './base/get-all.use-case.js';
+export * from './base/get-by-id.use-case.js';
+export * from './base/update.use-case.js';
+export * from './base/delete-by-id.use-case.js';
