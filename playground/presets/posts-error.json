@@ -1,11 +1,47 @@
 [
   {
-    "label": "POST /posts",
+    "label": "POST /posts (short title)",
     "method": "POST",
     "path": "/posts",
     "body": {
       "title": "12",
       "content": "new content"
     }
+  },
+  {
+    "label": "POST /posts (missing content)",
+    "method": "POST",
+    "path": "/posts",
+    "body": {
+      "title": "A valid title"
+    }
+  },
+  {
+    "label": "GET /posts/:id (invalid id)",
+    "method": "GET",
+    "path": "/posts/invalid-uuid"
+  },
+  {
+    "label": "PUT /posts/:id (invalid id)",
+    "method": "PUT",
+    "path": "/posts/invalid-uuid",
+    "body": {
+      "title": "updated post",
+      "content": "updated content"
+    }
+  },
+  {
+    "label": "PUT /posts/:id (short title)",
+    "method": "PUT",
+    "path": "/posts/01997199-4f31-7718-a766-687e926dd0b6",
+    "body": {
+      "title": "up",
+      "content": "updated content"
+    }
+  },
+  {
+    "label": "DELETE /posts/:id (invalid id)",
+    "method": "DELETE",
+    "path": "/posts/invalid-uuid"
   }
 ]
