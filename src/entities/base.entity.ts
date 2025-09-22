@@ -33,4 +33,11 @@ export abstract class BaseEntity {
     createdAt: Date;
     updatedAt: Date;
   };
+
+  static create(_props: any): Promise<BaseEntity> {
+    throw new Error('Method not implemented.');
+  }
+  static hydrate(_props: any): Promise<BaseEntity> {
+    throw new Error('Method not implemented.');
+  }
 }
