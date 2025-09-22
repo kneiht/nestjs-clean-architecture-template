@@ -20,6 +20,8 @@ export abstract class BaseEntity {
     this.updatedAt = props.updatedAt ?? new Date();
   }
 
+  public abstract validate(): Promise<void>;
+
   // Static method to generate a unique ID
   static idGenerator(): string {
     return uuidv7();

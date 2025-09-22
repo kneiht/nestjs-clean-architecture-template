@@ -1,3 +1,5 @@
+import { validate } from 'class-validator';
+import { plainToInstance } from 'class-transformer';
 import {
   IsDate,
   IsNotEmpty,
@@ -7,6 +9,7 @@ import {
   MinLength,
 } from 'class-validator';
 import { BaseEntity } from './base.entity';
+import { EntityValidationError } from './entity.errors';
 
 // Define CreatePostDto
 export class CreatePostDto {
@@ -59,13 +62,23 @@ export class Post extends BaseEntity {
     this.content = props.content ?? null;
   }
 
+  // Validate
+  public async validate(): Promise<void> {
+    const errors = await validate(this);
+    if (errors.length > 0) {
+      throw new EntityValidationError(JSON.stringify(errors));
+    }
+  }
+
   // Factory method to create a new post
-  public static create(props: CreatePostDto): Post {
+  public static async create(props: CreatePostDto): Promise<Post> {
+    await validate(props);
     return new Post(props);
   }
 
   // Factory method to hydrate a post from existing props
-  public static hydrate(props: HydratePostDto): Post {
+  public static async hydrate(props: HydratePostDto): Promise<Post> {
+    await validate(props);
     return new Post(props);
   }
 
