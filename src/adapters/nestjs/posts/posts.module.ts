@@ -17,46 +17,34 @@ import {
 // Import the Post entity
 import { Post } from '@/entities';
 
+// Create an array of use cases having the same dependencies
+const useCases = [
+  GetAllUseCase,
+  GetByIdUseCase,
+  DeleteByIdUseCase,
+  UpdateUseCase,
+];
+
+// Create an array of providers
+const useCaseProviders = useCases.map((uc) => ({
+  provide: uc,
+  useFactory: (postRepository: IPostRepository) => new uc(postRepository),
+  inject: ['IPostRepository'],
+}));
+
 @Module({
   controllers: [PostsController],
   providers: [
-    {
-      provide: GetAllUseCase,
-      useFactory: (postRepository: IPostRepository) => {
-        return new GetAllUseCase(postRepository);
-      },
-      inject: [PostInMemoryRepository],
-    },
-    {
-      provide: GetByIdUseCase,
-      useFactory: (postRepository: IPostRepository) => {
-        return new GetByIdUseCase(postRepository);
-      },
-      inject: [PostInMemoryRepository],
-    },
+    ...useCaseProviders,
     {
       provide: AddUseCase,
       useFactory: (postRepository: IPostRepository) => {
         return new AddUseCase(Post, postRepository);
       },
-      inject: [PostInMemoryRepository],
+      inject: ['IPostRepository'],
     },
     {
-      provide: UpdateUseCase,
-      useFactory: (postRepository: IPostRepository) => {
-        return new UpdateUseCase(postRepository);
-      },
-      inject: [PostInMemoryRepository],
-    },
-    {
-      provide: DeleteByIdUseCase,
-      useFactory: (postRepository: IPostRepository) => {
-        return new DeleteByIdUseCase(postRepository);
-      },
-      inject: [PostInMemoryRepository],
-    },
-    {
-      provide: PostInMemoryRepository,
+      provide: 'IPostRepository',
       useClass: PostInMemoryRepository,
     },
   ],

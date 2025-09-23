@@ -15,49 +15,31 @@ import {
 // Import specific use cases
 import { AddUserUseCase, UpdateUserUseCase } from '@/application/use-cases';
 
+// Create an array of use cases having the same dependencies
+const useCases = [
+  GetAllUseCase,
+  GetByIdUseCase,
+  DeleteByIdUseCase,
+  AddUserUseCase,
+  UpdateUserUseCase,
+];
+
+// Create an array of providers
+const useCaseProviders = useCases.map((uc) => ({
+  provide: uc,
+  useFactory: (userRepository: IUserRepository) => new uc(userRepository),
+  inject: ['IUserRepository'],
+}));
+
 @Module({
   controllers: [UsersController],
   providers: [
+    ...useCaseProviders,
     {
-      provide: GetAllUseCase,
-      useFactory: (userRepository: IUserRepository) => {
-        return new GetAllUseCase(userRepository);
-      },
-      inject: [UserInMemoryRepository],
-    },
-    {
-      provide: GetByIdUseCase,
-      useFactory: (userRepository: IUserRepository) => {
-        return new GetByIdUseCase(userRepository);
-      },
-      inject: [UserInMemoryRepository],
-    },
-    {
-      provide: DeleteByIdUseCase,
-      useFactory: (userRepository: IUserRepository) => {
-        return new DeleteByIdUseCase(userRepository);
-      },
-      inject: [UserInMemoryRepository],
-    },
-    {
-      provide: AddUserUseCase,
-      useFactory: (userRepository: IUserRepository) => {
-        return new AddUserUseCase(userRepository);
-      },
-      inject: [UserInMemoryRepository],
-    },
-    {
-      provide: UpdateUserUseCase,
-      useFactory: (userRepository: IUserRepository) => {
-        return new UpdateUserUseCase(userRepository);
-      },
-      inject: [UserInMemoryRepository],
-    },
-    {
-      provide: UserInMemoryRepository,
+      provide: 'IUserRepository',
       useClass: UserInMemoryRepository,
     },
   ],
-  exports: [AddUserUseCase, UserInMemoryRepository],
+  exports: [AddUserUseCase, 'IUserRepository'],
 })
 export class UsersModule {}
