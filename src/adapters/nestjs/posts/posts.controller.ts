@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
 
 // Import use cases
@@ -20,6 +21,9 @@ import {
 // Import dtos
 import { CreatePostDto, UpdatePostDto } from './posts.dto';
 
+// Import Guards
+import { JwtAuthGuard } from '@/adapters/nestjs/auth/auth.guard';
+
 @Controller('posts')
 export class PostsController {
   constructor(
@@ -30,6 +34,7 @@ export class PostsController {
     private readonly deleteByIdUseCase: DeleteByIdUseCase,
   ) {}
 
+  @UseGuards(JwtAuthGuard)
   @Get()
   async findAll() {
     return await this.getAllUseCase.execute();

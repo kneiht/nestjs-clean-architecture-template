@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
 
 // Import generic use cases
@@ -20,6 +21,9 @@ import { AddUserUseCase, UpdateUserUseCase } from '@/application/use-cases';
 
 // Import DTOs
 import { CreateUserDto, UpdateUserDto } from './users.dto';
+import { JwtAuthGuard, RolesGuard } from '../auth/auth.guard';
+import { Role } from '@/entities';
+import { Roles } from '../auth/roles.decorator';
 
 @Controller('users')
 export class UsersController {
@@ -31,6 +35,8 @@ export class UsersController {
     private readonly deleteUserByIdUseCase: DeleteByIdUseCase,
   ) {}
 
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
   @Get()
   async getAll() {
     return await this.getUserAllUseCase.execute();
