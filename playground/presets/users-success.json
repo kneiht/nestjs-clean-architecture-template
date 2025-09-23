@@ -1,5 +1,10 @@
 [
   {
+    "label": "GET /users",
+    "method": "GET",
+    "path": "/users"
+  },
+  {
     "label": "POST /users",
     "method": "POST",
     "path": "/users",

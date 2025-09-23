@@ -222,9 +222,11 @@
           );
 
           // If accessToken is in the response body, populate the token input and save to localStorage
-          if (responseBody && responseBody.accessToken) {
-            $('api-token').value = responseBody.accessToken;
-            localStorage.setItem('api-token', responseBody.accessToken);
+          // Check for nested accessToken based on the new structure
+          const accessToken = responseBody?.data?.token?.accessToken;
+          if (accessToken) {
+            $('api-token').value = accessToken;
+            localStorage.setItem('api-token', accessToken);
           }
         } catch (e) {
           outEl.textContent = JSON.stringify({ error: String(e) }, null, 2);
