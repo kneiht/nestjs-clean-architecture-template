@@ -44,6 +44,7 @@ export class AddUserUseCase implements IUseCase<CreateUserDto> {
       if (error instanceof EntityValidationError) {
         return failureValidation(error.message);
       }
+      console.error(error);
       return failureInternal('Failed to create user');
     }
   }
