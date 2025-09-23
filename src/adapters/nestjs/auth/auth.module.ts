@@ -6,7 +6,6 @@ import { AuthController } from './auth.controller';
 
 // Import Repository
 import { IUserRepository } from '@/application/repositories';
-import { UserInMemoryRepository } from '@/adapters/repositories/in-memory';
 
 // Import Use Cases
 import { LoginUseCase, RegisterUseCase } from '@/application/use-cases';
@@ -16,6 +15,7 @@ import { AddUserUseCase } from '@/application/use-cases';
 import { JsonWebToken } from '@/adapters/services/jwt.service';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './jwt.strategy';
+import { IJsonWebToken } from '@/application/services/jwt.service';
 
 @Module({
   imports: [
@@ -32,24 +32,24 @@ import { JwtStrategy } from './jwt.strategy';
       provide: LoginUseCase,
       useFactory: (
         userRepository: IUserRepository,
-        jsonWebToken: JsonWebToken,
+        jsonWebToken: IJsonWebToken,
       ) => {
         return new LoginUseCase(userRepository, jsonWebToken);
       },
-      inject: [UserInMemoryRepository, JsonWebToken],
+      inject: ['IUserRepository', 'IJsonWebToken'],
     },
     {
       provide: RegisterUseCase,
       useFactory: (
         addUserUseCase: AddUserUseCase,
-        jsonWebToken: JsonWebToken,
+        jsonWebToken: IJsonWebToken,
       ) => {
         return new RegisterUseCase(jsonWebToken, addUserUseCase);
       },
-      inject: [AddUserUseCase, JsonWebToken],
+      inject: [AddUserUseCase, 'IJsonWebToken'],
     },
     {
-      provide: JsonWebToken,
+      provide: 'IJsonWebToken',
       useClass: JsonWebToken,
     },
     JwtStrategy,
