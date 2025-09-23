@@ -14,10 +14,13 @@ import { AddUserUseCase } from '@/application/use-cases';
 
 // Import Services
 import { JsonWebToken } from '@/adapters/services/jwt.service';
+import { PassportModule } from '@nestjs/passport';
+import { JwtStrategy } from './jwt.strategy';
 
 @Module({
   imports: [
     UsersModule,
+    PassportModule,
     JwtModule.register({
       secret: env.JWT_SECRET,
       signOptions: { expiresIn: env.JWT_ACCESS_EXPIRES_IN },
@@ -49,6 +52,7 @@ import { JsonWebToken } from '@/adapters/services/jwt.service';
       provide: JsonWebToken,
       useClass: JsonWebToken,
     },
+    JwtStrategy,
   ],
 })
 export class AuthModule {}
