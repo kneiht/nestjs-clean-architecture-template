@@ -1,12 +1,12 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './adapters/nestjs/app.module';
-import { ValidationPipe } from '@nestjs/common';
+import { UseCaseResponseInterceptor } from './adapters/nestjs/interceptors/response.interceptor';
 import { env } from '@/config/environment';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors();
-  app.useGlobalPipes(new ValidationPipe({ transform: true }));
+  app.useGlobalInterceptors(new UseCaseResponseInterceptor());
   await app.listen(env.PORT ?? 3000);
 }
-bootstrap();
+void bootstrap();
