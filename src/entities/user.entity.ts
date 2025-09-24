@@ -117,7 +117,10 @@ export class User extends BaseEntity {
     await validateOrThrow(props, EntityInputValidationError);
     const userProps = {
       ...props,
-      hashedPassword: await bcrypt.hash(props.password, env.BCRYPT_ROUNDS),
+      hashedPassword: await bcrypt.hash(
+        props.password,
+        Number(env.BCRYPT_ROUNDS),
+      ),
       role: props.role ?? Role.USER,
     };
     return new User(userProps);

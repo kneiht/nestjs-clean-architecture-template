@@ -31,7 +31,7 @@ export const env = {
   JWT_ACCESS_EXPIRES_IN: process.env.JWT_EXPIRES_IN?.toString() || '1h',
   JWT_REFRESH_EXPIRES_IN:
     process.env.JWT_REFRESH_EXPIRES_IN?.toString() || '7h',
-  BCRYPT_ROUNDS: process.env.BCRYPT_ROUNDS?.toString() || '12',
+  BCRYPT_ROUNDS: Number(process.env.BCRYPT_ROUNDS) || 12,
   DB_SELECT: process.env.DB_SELECT?.toString() || 'IN_MEMORY',
 };
 
