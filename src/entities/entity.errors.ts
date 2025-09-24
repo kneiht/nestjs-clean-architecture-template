@@ -5,7 +5,7 @@ export class EntityValidationError extends Error {
   }
 }
 
-export class InputValidationError extends Error {
+export class EntityInputValidationError extends Error {
   constructor(message: string) {
     super(message);
     this.name = 'InputError';

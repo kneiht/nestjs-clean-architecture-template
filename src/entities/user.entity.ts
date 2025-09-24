@@ -1,4 +1,3 @@
-import { validate } from 'class-validator';
 import {
   IsDate,
   IsEmail,
@@ -10,8 +9,10 @@ import {
   MinLength,
 } from 'class-validator';
 import { BaseEntity } from './base.entity';
-import { EntityValidationError } from './entity.errors';
+import { EntityInputValidationError } from './entity.errors';
 import bcrypt from 'node_modules/bcryptjs';
+import { validateOrThrow } from '@/shared/validator';
+import { env } from '@/config/environment';
 
 export enum Role {
   USER = 'USER',
@@ -111,20 +112,12 @@ export class User extends BaseEntity {
     this.role = props.role;
   }
 
-  // Validate
-  public async validate(): Promise<void> {
-    const errors = await validate(this);
-    if (errors.length > 0) {
-      throw new EntityValidationError(JSON.stringify(errors));
-    }
-  }
-
   // Factory method to create a new user
   public static async create(props: CreateUserDto): Promise<User> {
-    await validate(props);
+    await validateOrThrow(props, EntityInputValidationError);
     const userProps = {
       ...props,
-      hashedPassword: await bcrypt.hash(props.password, 10),
+      hashedPassword: await bcrypt.hash(props.password, env.BCRYPT_ROUNDS),
       role: props.role ?? Role.USER,
     };
     return new User(userProps);
@@ -132,7 +125,7 @@ export class User extends BaseEntity {
 
   // Factory method to hydrate a user from existing props
   public static async hydrate(props: HydrateUserDto): Promise<User> {
-    await validate(props);
+    await validateOrThrow(props, EntityInputValidationError);
     return new User(props);
   }
 

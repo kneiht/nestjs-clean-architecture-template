@@ -1,5 +1,7 @@
 import { uuidv7 } from 'uuidv7';
 import { IsDate, IsUUID } from 'class-validator';
+import { validateOrThrow } from '@/shared/validator';
+import { EntityValidationError } from './entity.errors';
 
 // Define BaseEntity
 export abstract class BaseEntity {
@@ -20,8 +22,10 @@ export abstract class BaseEntity {
     this.updatedAt = props.updatedAt ?? new Date();
   }
 
-  public abstract validate(): Promise<void>;
-
+  // Validate
+  public async validate(): Promise<void> {
+    await validateOrThrow(this, EntityValidationError);
+  }
   // Static method to generate a unique ID
   static idGenerator(): string {
     return uuidv7();
