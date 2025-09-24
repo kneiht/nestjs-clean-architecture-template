@@ -4,6 +4,10 @@ import { Reflector } from '@nestjs/core';
 import { ROLES_KEY } from './roles.decorator';
 import { Role } from '@/entities';
 
+import { Request } from 'express';
+import { UserInRequest } from './auth.dto';
+type RequestWithUser = Request & { user: UserInRequest };
+
 @Injectable()
 export class JwtAuthGuard extends AuthGuard('jwt') {}
 
@@ -24,14 +28,9 @@ export class RolesGuard implements CanActivate {
     }
 
     // Get user from request (added by JwtAuthGuard)
-    // TODO: Add type for user
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const { user } = context.switchToHttp().getRequest();
-
-    // TODO: Check if the role is valid in database
+    const { user }: RequestWithUser = context.switchToHttp().getRequest();
 
     // Check if user role is in required roles
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    return requiredRoles.some((role) => user?.role === role);
+    return requiredRoles.some((role) => user.role === role);
   }
 }

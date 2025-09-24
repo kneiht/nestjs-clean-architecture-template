@@ -52,7 +52,13 @@ import { IJsonWebToken } from '@/application/services/jwt.service';
       provide: 'IJsonWebToken',
       useClass: JsonWebToken,
     },
-    JwtStrategy,
+    {
+      provide: JwtStrategy,
+      useFactory: (userRepository: IUserRepository) => {
+        return new JwtStrategy(userRepository);
+      },
+      inject: ['IUserRepository'],
+    },
   ],
 })
 export class AuthModule {}
