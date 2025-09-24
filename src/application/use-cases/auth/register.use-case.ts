@@ -31,7 +31,10 @@ export class RegisterUseCase implements IUseCase<RegisterUseCaseDto> {
   ): Promise<UseCaseReponse<RegisterUseCaseData>> {
     try {
       // Validate the input
-      const { ok, message } = await validateSafe(input as object);
+      const { ok, message } = await validateSafe(
+        input as object,
+        RegisterUseCaseDto,
+      );
       if (!ok) {
         return failureUnauthorized('Input validation failed', message);
       }

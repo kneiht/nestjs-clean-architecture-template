@@ -24,7 +24,10 @@ export class CheckAuthUseCase implements IUseCase<CheckAuthUseCaseDto> {
     // Catch any errors
     try {
       // Validate the input
-      const { ok, message } = await validateSafe(input as object);
+      const { ok, message } = await validateSafe(
+        input as object,
+        CheckAuthUseCaseDto,
+      );
       if (!ok) {
         return failureUnauthorized('Input validation failed', message);
       }

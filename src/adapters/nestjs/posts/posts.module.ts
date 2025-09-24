@@ -15,15 +15,10 @@ import {
 } from '@/application/use-cases';
 
 // Import the Post entity
-import { Post } from '@/entities';
+import { CreatePostDto, UpdatePostDto, Post } from '@/entities';
 
 // Create an array of use cases having the same dependencies
-const useCases = [
-  GetAllUseCase,
-  GetByIdUseCase,
-  DeleteByIdUseCase,
-  UpdateUseCase,
-];
+const useCases = [GetAllUseCase, GetByIdUseCase, DeleteByIdUseCase];
 
 // Create an array of providers
 const useCaseProviders = useCases.map((uc) => ({
@@ -39,13 +34,20 @@ const useCaseProviders = useCases.map((uc) => ({
     {
       provide: AddUseCase,
       useFactory: (postRepository: IPostRepository) => {
-        return new AddUseCase(Post, postRepository);
+        return new AddUseCase(CreatePostDto, Post, postRepository);
       },
       inject: ['IPostRepository'],
     },
     {
       provide: 'IPostRepository',
       useClass: PostInMemoryRepository,
+    },
+    {
+      provide: UpdateUseCase,
+      useFactory: (postRepository: IPostRepository) => {
+        return new UpdateUseCase(UpdatePostDto, postRepository);
+      },
+      inject: ['IPostRepository'],
     },
   ],
 })

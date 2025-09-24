@@ -31,7 +31,10 @@ export class LoginUseCase implements IUseCase<LoginUseCaseDto> {
   ): Promise<UseCaseReponse<LoginUseCaseData>> {
     try {
       // Validate the input
-      const { ok, message } = await validateSafe(input as object);
+      const { ok, message } = await validateSafe(
+        input as object,
+        LoginUseCaseDto,
+      );
       if (!ok) {
         return failureUnauthorized('Input validation failed', message);
       }

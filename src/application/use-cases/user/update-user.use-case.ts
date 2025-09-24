@@ -20,7 +20,10 @@ export class UpdateUserUseCase implements IUseCase<UpdateUserDto> {
   async execute(input: UpdateUserDto): Promise<UseCaseReponse<User>> {
     try {
       // Validate the input
-      const { ok, message } = await validateSafe(input as object);
+      const { ok, message } = await validateSafe(
+        input as object,
+        UpdateUserDto,
+      );
       if (!ok) {
         return failureValidation('Input validation failed', message);
       }

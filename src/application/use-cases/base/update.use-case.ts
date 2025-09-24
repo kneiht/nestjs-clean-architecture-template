@@ -14,15 +14,23 @@ import {
 } from '@/entities/entity.errors';
 import { validateSafe } from '@/shared/validator';
 
+type ClassType = new (...args: any[]) => any;
+
 // Define the use case
 export class UpdateUseCase<T extends { id: string }> implements IUseCase<T> {
-  constructor(private repository: IBaseRepository<BaseEntity>) {}
+  constructor(
+    private dtoClass: ClassType,
+    private repository: IBaseRepository<BaseEntity>,
+  ) {}
 
   // Execute the use case
   async execute(input: T): Promise<UseCaseReponse<BaseEntity>> {
     try {
       // Validate the input
-      const { ok, message } = await validateSafe(input as object);
+      const { ok, message } = await validateSafe(
+        input as object,
+        this.dtoClass,
+      );
       if (!ok) {
         return failureValidation('Input validation failed', message);
       }

@@ -18,7 +18,10 @@ export class AddUserUseCase implements IUseCase<CreateUserDto> {
   async execute(input: CreateUserDto): Promise<UseCaseReponse<User>> {
     try {
       // Validate the input
-      const { ok, message } = await validateSafe(input as object);
+      const { ok, message } = await validateSafe(
+        input as object,
+        CreateUserDto,
+      );
       if (!ok) {
         return failureValidation('Input validation failed', message);
       }
