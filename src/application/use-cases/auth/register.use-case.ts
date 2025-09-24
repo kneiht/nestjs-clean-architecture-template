@@ -1,5 +1,4 @@
 import { env } from '@/config/environment';
-import { validate } from 'class-validator';
 import { IUseCase } from '..';
 
 import { CreateUserDto, Role } from '@/entities';
@@ -8,7 +7,7 @@ import { RegisterUseCaseData, RegisterUseCaseDto } from './auth.dto';
 
 import {
   failureInternal,
-  failureValidation,
+  failureUnauthorized,
   successCreated,
   UseCaseReponse,
 } from '../response';
@@ -18,6 +17,7 @@ import {
   IJsonWebToken,
   JwtPayload,
 } from '@/application/services/jwt.service';
+import { validateSafe } from '@/shared/validator';
 
 // Define the use case
 export class RegisterUseCase implements IUseCase<RegisterUseCaseDto> {
@@ -30,15 +30,10 @@ export class RegisterUseCase implements IUseCase<RegisterUseCaseDto> {
     input: RegisterUseCaseDto,
   ): Promise<UseCaseReponse<RegisterUseCaseData>> {
     try {
-      // Validate input
-      const errors = await validate(input);
-      if (errors.length > 0) {
-        return failureValidation(
-          'Input validation failed',
-          errors
-            .map((error) => Object.values(error.constraints ?? {}))
-            .join(', '),
-        );
+      // Validate the input
+      const { ok, message } = await validateSafe(input as object);
+      if (!ok) {
+        return failureUnauthorized('Input validation failed', message);
       }
 
       // Use AddUserUseCase to create the user

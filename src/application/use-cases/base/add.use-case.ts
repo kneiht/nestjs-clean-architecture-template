@@ -9,8 +9,9 @@ import {
 import { BaseEntity } from '@/entities/base.entity.js';
 import {
   EntityValidationError,
-  InputValidationError,
+  EntityInputValidationError,
 } from '@/entities/entity.errors';
+import { validateSafe } from '@/shared/validator';
 
 // Define the use case
 export class AddUseCase<T> implements IUseCase<T> {
@@ -21,6 +22,12 @@ export class AddUseCase<T> implements IUseCase<T> {
 
   async execute(input: T): Promise<UseCaseReponse<BaseEntity>> {
     try {
+      // Validate the input
+      const { ok, message } = await validateSafe(input as object);
+      if (!ok) {
+        return failureValidation('Input validation failed', message);
+      }
+
       // Create the entity
       const entity = await this.entityStaticMethods.create(input);
 
@@ -31,7 +38,7 @@ export class AddUseCase<T> implements IUseCase<T> {
       return successCreated(newEntity);
     } catch (error) {
       console.error(error);
-      if (error instanceof InputValidationError) {
+      if (error instanceof EntityInputValidationError) {
         return failureValidation('Input validation failed', error.message);
       }
       if (error instanceof EntityValidationError) {

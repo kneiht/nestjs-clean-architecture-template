@@ -8,7 +8,8 @@ import {
   successCreated,
   UseCaseReponse,
 } from '../response';
-import { EntityValidationError } from '@/entities';
+import { EntityValidationError, EntityInputValidationError } from '@/entities';
+import { validateSafe } from '@/shared/validator';
 
 // Define the use case for adding a user
 export class AddUserUseCase implements IUseCase<CreateUserDto> {
@@ -16,6 +17,12 @@ export class AddUserUseCase implements IUseCase<CreateUserDto> {
 
   async execute(input: CreateUserDto): Promise<UseCaseReponse<User>> {
     try {
+      // Validate the input
+      const { ok, message } = await validateSafe(input as object);
+      if (!ok) {
+        return failureValidation('Input validation failed', message);
+      }
+
       // Check if user with the same email already exists
       const existingUser = await this.userRepository.findByEmail(input.email);
       if (existingUser) {
@@ -32,7 +39,6 @@ export class AddUserUseCase implements IUseCase<CreateUserDto> {
         }
       }
 
-      // Create the user
       const user = await User.create(input);
 
       // Add to Repository
@@ -41,11 +47,14 @@ export class AddUserUseCase implements IUseCase<CreateUserDto> {
       // Return Success Response
       return successCreated(newUser);
     } catch (error) {
-      if (error instanceof EntityValidationError) {
-        return failureValidation(error.message);
-      }
       console.error(error);
-      return failureInternal('Failed to create user');
+      if (error instanceof EntityInputValidationError) {
+        return failureValidation('Input validation failed', error.message);
+      }
+      if (error instanceof EntityValidationError) {
+        return failureValidation('Entity validation failed', error.message);
+      }
+      return failureInternal('Failed to create entity');
     }
   }
 }

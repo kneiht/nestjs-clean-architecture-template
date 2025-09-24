@@ -8,7 +8,11 @@ import {
   UseCaseReponse,
 } from '../response';
 import { BaseEntity } from '@/entities/base.entity';
-import { EntityValidationError } from '@/entities/entity.errors';
+import {
+  EntityValidationError,
+  EntityInputValidationError,
+} from '@/entities/entity.errors';
+import { validateSafe } from '@/shared/validator';
 
 // Define the use case
 export class UpdateUseCase<T extends { id: string }> implements IUseCase<T> {
@@ -17,6 +21,12 @@ export class UpdateUseCase<T extends { id: string }> implements IUseCase<T> {
   // Execute the use case
   async execute(input: T): Promise<UseCaseReponse<BaseEntity>> {
     try {
+      // Validate the input
+      const { ok, message } = await validateSafe(input as object);
+      if (!ok) {
+        return failureValidation('Input validation failed', message);
+      }
+
       const { id, ...updatePayload } = input;
 
       // Fetch the existing entity
@@ -39,10 +49,13 @@ export class UpdateUseCase<T extends { id: string }> implements IUseCase<T> {
       return successOk(updatedEntity);
     } catch (error) {
       console.error(error);
-      if (error instanceof EntityValidationError) {
-        return failureValidation(error.message);
+      if (error instanceof EntityInputValidationError) {
+        return failureValidation('Input validation failed', error.message);
       }
-      return failureInternal('Failed to update', (error as Error).message);
+      if (error instanceof EntityValidationError) {
+        return failureValidation('Entity validation failed', error.message);
+      }
+      return failureInternal('Failed to create entity');
     }
   }
 }

@@ -1,5 +1,4 @@
 import { env } from '@/config/environment';
-import { validate } from 'class-validator';
 import { IUseCase } from '..';
 
 import { Role } from '@/entities/user.entity';
@@ -9,7 +8,6 @@ import { IUserRepository } from '@/application/repositories';
 import {
   failureInternal,
   failureUnauthorized,
-  failureValidation,
   successOk,
   UseCaseReponse,
 } from '../response';
@@ -19,6 +17,7 @@ import {
   IJsonWebToken,
   JwtPayload,
 } from '@/application/services/jwt.service';
+import { validateSafe } from '@/shared/validator';
 
 // Define the use case
 export class LoginUseCase implements IUseCase<LoginUseCaseDto> {
@@ -31,15 +30,10 @@ export class LoginUseCase implements IUseCase<LoginUseCaseDto> {
     input: LoginUseCaseDto,
   ): Promise<UseCaseReponse<LoginUseCaseData>> {
     try {
-      // Validate input
-      const errors = await validate(input);
-      if (errors.length > 0) {
-        return failureValidation(
-          'Input validation failed',
-          errors
-            .map((error) => Object.values(error.constraints ?? {}))
-            .join(', '),
-        );
+      // Validate the input
+      const { ok, message } = await validateSafe(input as object);
+      if (!ok) {
+        return failureUnauthorized('Input validation failed', message);
       }
 
       // Find user by email

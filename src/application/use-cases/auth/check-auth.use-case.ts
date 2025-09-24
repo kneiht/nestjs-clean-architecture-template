@@ -1,4 +1,3 @@
-import { validate } from 'class-validator';
 import { IUseCase } from '..';
 
 import { Role } from '@/entities';
@@ -6,12 +5,8 @@ import { IUserRepository } from '@/application/repositories';
 import { IJsonWebToken } from '@/application/services/jwt.service';
 import { CheckAuthUseCaseData, CheckAuthUseCaseDto } from './auth.dto';
 
-import {
-  failureUnauthorized,
-  failureValidation,
-  successOk,
-  UseCaseReponse,
-} from '../response';
+import { failureUnauthorized, successOk, UseCaseReponse } from '../response';
+import { validateSafe } from '@/shared/validator';
 
 // Define data for the response
 
@@ -28,16 +23,14 @@ export class CheckAuthUseCase implements IUseCase<CheckAuthUseCaseDto> {
   ): Promise<UseCaseReponse<CheckAuthUseCaseData>> {
     // Catch any errors
     try {
-      // Validate input
-      const errors = await validate(input);
-      if (errors.length > 0) {
-        const errorMessage = errors
-          .map((error) => Object.values(error.constraints || {}).join(', '))
-          .join(', ');
-        return failureValidation(errorMessage);
+      // Validate the input
+      const { ok, message } = await validateSafe(input as object);
+      if (!ok) {
+        return failureUnauthorized('Input validation failed', message);
       }
 
       const { token, roleToCheck } = input;
+
       // Verify the token
       const payload = await this.jsonWebToken.verify(token);
       if (!payload) {
