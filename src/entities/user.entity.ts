@@ -115,6 +115,11 @@ export class User extends BaseEntity {
     this.role = props.role;
   }
 
+  // Get hashedPassword
+  public getHashedPassword(): string {
+    return this.hashedPassword;
+  }
+
   // Validate
   public async validate(): Promise<void> {
     await validateOrThrow(this, User, EntityValidationError);
