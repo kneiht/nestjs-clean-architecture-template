@@ -3,7 +3,7 @@ import { UsersController } from './users.controller';
 
 // Import Repository
 import { IUserRepository } from '@/application/repositories';
-import { UserInMemoryRepository } from '@/adapters/repositories/in-memory';
+import { UserRepository } from '@/adapters/repositories';
 
 // Import generic use cases
 import {
@@ -37,7 +37,7 @@ const useCaseProviders = useCases.map((uc) => ({
     ...useCaseProviders,
     {
       provide: 'IUserRepository',
-      useClass: UserInMemoryRepository,
+      useClass: UserRepository,
     },
   ],
   exports: [AddUserUseCase, 'IUserRepository'],

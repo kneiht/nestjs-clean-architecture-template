@@ -3,7 +3,7 @@ import { PostsController } from './posts.controller';
 
 // Import Repository
 import { IPostRepository } from '@/application/repositories';
-import { PostInMemoryRepository } from '@/adapters/repositories/in-memory';
+import { PostRepository } from '@/adapters/repositories';
 
 // Import UseCase
 import {
@@ -40,7 +40,7 @@ const useCaseProviders = useCases.map((uc) => ({
     },
     {
       provide: 'IPostRepository',
-      useClass: PostInMemoryRepository,
+      useClass: PostRepository,
     },
     {
       provide: UpdateUseCase,
