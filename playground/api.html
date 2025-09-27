@@ -118,15 +118,29 @@
                 />
               </div>
 
-              <div class="grid gap-2 mt-2">
-                <h4 class="text-sm font-medium">Body</h4>
-                <textarea
-                  id="api-body"
-                  placeholder="{ "key": "value" }"
-                  spellcheck="false"
-                  class="w-full rounded-md bg-slate-900/70 border border-slate-800 px-3 py-2 text-sm outline-none focus:border-indigo-500 h-32"
-                ></textarea>
-              </div>
+               <div class="grid gap-2 mt-2">
+                 <div class="flex items-center gap-2">
+                   <h4 class="text-sm font-medium">Body</h4>
+                   <label class="flex items-center gap-1 text-xs">
+                     <input type="checkbox" id="file-upload-mode" class="rounded">
+                     File Upload
+                   </label>
+                 </div>
+                 <textarea
+                   id="api-body"
+                   placeholder="{ "key": "value" }"
+                   spellcheck="false"
+                   class="w-full rounded-md bg-slate-900/70 border border-slate-800 px-3 py-2 text-sm outline-none focus:border-indigo-500 h-32"
+                 ></textarea>
+                 <div id="file-upload-section" class="hidden">
+                   <input
+                     type="file"
+                     id="api-file"
+                     accept="image/*"
+                     class="w-full rounded-md bg-slate-900/70 border border-slate-800 px-3 py-2 text-sm outline-none focus:border-indigo-500"
+                   >
+                 </div>
+               </div>
 
               <div class="grid gap-2 mt-2">
                 <h4 class="text-sm font-medium">Authentication</h4>
@@ -173,7 +187,7 @@
       const qAll = (sel) => Array.from(document.querySelectorAll(sel));
 
       function getHeaders() {
-        const headers = { 'Content-Type': 'application/json' };
+        const headers = {};
         const token = $('api-token').value.trim();
         if (token) {
           headers['Authorization'] = `Bearer ${token}`;
@@ -188,19 +202,30 @@
         const url = `${baseUrl}${path}`;
         const outEl = $('api-out');
         
-        let body = $('api-body').value.trim();
-        try {
-            body = body ? JSON.parse(body) : null;
-        } catch (e) {
+        let body = null;
+        const isFileMode = $('file-upload-mode').checked;
+        const fileInput = $('api-file');
+
+        if (isFileMode && fileInput.files.length > 0) {
+          // File upload mode
+          body = new FormData();
+          body.append('image', fileInput.files[0]);
+        } else if (!isFileMode) {
+          // JSON mode
+          let jsonBody = $('api-body').value.trim();
+          try {
+            body = jsonBody ? JSON.parse(jsonBody) : null;
+          } catch (e) {
             outEl.textContent = JSON.stringify({ error: "Invalid JSON in request body" }, null, 2);
             return;
+          }
         }
 
         try {
           const res = await fetch(url, {
             method,
-            headers: getHeaders(),
-            body: (method !== 'GET' && method !== 'DELETE' && body) ? JSON.stringify(body) : undefined,
+            headers: isFileMode ? getHeaders() : { ...getHeaders(), 'Content-Type': 'application/json' },
+            body: (method !== 'GET' && method !== 'DELETE' && body) ? (isFileMode ? body : JSON.stringify(body)) : undefined,
           });
 
           const responseBody = await res.json().catch(() => ({ raw: 'Non-JSON response' }));
@@ -233,7 +258,14 @@
         }
       }
 
-      $('btn-send').addEventListener('click', callApi);
+       $('btn-send').addEventListener('click', callApi);
+
+       // Toggle file upload mode
+       $('file-upload-mode').addEventListener('change', (e) => {
+         const isFileMode = e.target.checked;
+         $('api-body').style.display = isFileMode ? 'none' : 'block';
+         $('file-upload-section').style.display = isFileMode ? 'block' : 'none';
+       });
 
       async function loadQuickTests(filename = 'default.json') {
         try {
@@ -250,8 +282,16 @@
             btn.addEventListener('click', () => {
               $('api-method').value = test.method;
               $('api-path').value = test.path;
-              $('api-body').value = test.body ? JSON.stringify(test.body, null, 2) : '';
-              callApi();
+              const isImageUpload = test.path.includes('/images/upload');
+              $('file-upload-mode').checked = isImageUpload;
+              $('file-upload-mode').dispatchEvent(new Event('change'));
+              if (!isImageUpload) {
+                $('api-body').value = test.body ? JSON.stringify(test.body, null, 2) : '';
+              }
+              // Don't auto-call for file uploads, let user select file first
+              if (!isImageUpload) {
+                callApi();
+              }
             });
             container.appendChild(btn);
           });

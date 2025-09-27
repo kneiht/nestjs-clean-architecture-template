@@ -24,6 +24,16 @@
     }
   },
   {
+    "label": "POST /posts (with image)",
+    "method": "POST",
+    "path": "/posts",
+    "body": {
+      "title": "post with image",
+      "content": "content",
+      "imageId": "replace-with-uploaded-image-id"
+    }
+  },
+  {
     "label": "PUT /posts/:id",
     "method": "PUT",
     "path": "/posts/01997199-4f31-7718-a766-687e926dd0b6",
@@ -36,5 +46,11 @@
     "label": "DELETE /posts/:id",
     "method": "DELETE",
     "path": "/posts/01997199-4f31-7718-a766-687e926dd0b6"
+  },
+  {
+    "label": "POST /images/upload",
+    "method": "POST",
+    "path": "/images/upload",
+    "note": "Select an image file using the file input above"
   }
 ]
