@@ -3,5 +3,5 @@ export type ImageResponse = {
 };
 
 export interface IImageUploadService {
-  upload(image: any): Promise<ImageResponse>;
+  upload(image: unknown): Promise<ImageResponse>;
 }

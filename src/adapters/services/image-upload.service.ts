@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { uuidv7 } from 'uuidv7';
 import { Injectable } from '@nestjs/common';
 import { promises as fs } from 'fs';
@@ -12,9 +9,10 @@ import {
 
 @Injectable()
 class LocalImageUploadService implements IImageUploadService {
-  async upload(file: any): Promise<ImageResponse> {
+  async upload(file: Express.Multer.File): Promise<ImageResponse> {
     // Validate file type
     const allowedMimes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+    console.log(file.mimetype);
     if (!allowedMimes.includes(file.mimetype)) {
       throw new Error('Invalid file type. Only image files are allowed.');
     }

@@ -20,7 +20,7 @@ export class ImagesController {
   @UseGuards(JwtAuthGuard)
   @Post('upload')
   @UseInterceptors(FileInterceptor('image'))
-  async uploadImage(@UploadedFile() file: any) {
+  async uploadImage(@UploadedFile() file: Express.Multer.File) {
     return await this.uploadImageUseCase.execute({ file });
   }
 }

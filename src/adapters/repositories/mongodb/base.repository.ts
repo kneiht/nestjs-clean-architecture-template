@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+ 
 import { Model } from 'mongoose';
 import { IBaseRepository } from '@/application/repositories';
 

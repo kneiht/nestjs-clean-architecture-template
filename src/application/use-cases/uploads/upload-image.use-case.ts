@@ -5,7 +5,7 @@ import { failureInternal, successCreated, UseCaseReponse } from '../response';
 import { Image } from '@/entities';
 
 export interface UploadImageInput {
-  file: any;
+  file: unknown;
 }
 
 export class UploadImageUseCase implements IUseCase<UploadImageInput> {
