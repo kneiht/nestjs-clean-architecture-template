@@ -16,3 +16,5 @@ export * from './user/update-user.use-case';
 export * from './auth/login.use-case';
 export * from './auth/register.use-case';
 export * from './auth/check-auth.use-case';
+
+export * from './uploads/upload-image.use-case';
