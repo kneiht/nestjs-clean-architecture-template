@@ -14,10 +14,6 @@ const postSchema = new mongoose.Schema<Omit<Post, 'id'> & { _id: string }>({
     required: true,
     minlength: 3,
   },
-  imageId: {
-    type: String,
-    required: false,
-  },
   createdAt: {
     type: Date,
     required: true,
