@@ -59,3 +59,7 @@ report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
 # Private folders and files
 \#*
+
+# Local uploads
+/uploads
+.gitignore
